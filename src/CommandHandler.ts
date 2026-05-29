@@ -11,4 +11,15 @@ export function handlerLogin(cmdName: string, ...args: string[] ){
     
 }
 
-export type
+export type CommandsRegistry = Record<string,CommandHandler>
+
+function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler){
+    registry[cmdName] = handler;
+
+}
+
+function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]) {
+    if (registry[cmdName] === undefined)
+        throw new Error(`Unknown command: ${cmdName}`);
+    registry[cmdName](cmdName, ...args);
+}
