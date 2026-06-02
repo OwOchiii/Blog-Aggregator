@@ -36,7 +36,14 @@ export async function handlerReset(cmdName: string, ...args: string[]){
 
 export async function handlerGetAllUser(cmdName: string, ...args: string[]){
     const allUser = await getAllUser();
-    console.log(allUser);
+    const cfg = readConfig();
+    for (const user of allUser) {
+        if (user.name === cfg.currentUserName) {
+            console.log(`* ${user.name} (current)`);
+        } else {
+            console.log(`* ${user.name}`);
+        }
+    }
 }
 
 

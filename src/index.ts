@@ -10,12 +10,11 @@ import {
 } from "./CommandHandler";
 
 async function main() {
-    console.log("Hello, world!");
     const CommandsRegistry: CommandsRegistry = {};
     registerCommand(CommandsRegistry, "login", handlerLogin);
     registerCommand(CommandsRegistry, "register", handlerRegister);
     registerCommand(CommandsRegistry,"reset",handlerReset);
-    registerCommand(CommandsRegistry,"user",handlerGetAllUser)
+    registerCommand(CommandsRegistry,"users",handlerGetAllUser)
 
     let args: string[] = process.argv;
     if (args.length < 3)
