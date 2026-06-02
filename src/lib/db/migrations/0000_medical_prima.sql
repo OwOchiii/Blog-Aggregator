@@ -11,7 +11,7 @@ create table "feeds"(
     "created_at" timestamp DEFAULT now() NOT NULL,
     "updated_at" timestamp DEFAULT now() NOT NULL,
     "name" text NOT NULL,
-    "url" text NOT NULL,
+    "url" text NOT NULL UNIQUE,
     "user_id" uuid NOT NULL,
     CONSTRAINT "feeds_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
 )
