@@ -6,15 +6,17 @@ import {
     registerCommand,
     handlerReset,
     runCommand,
-    handlerGetAllUser
+    handlerGetAllUser,
+    handlerAgg
 } from "./CommandHandler";
 
 async function main() {
     const CommandsRegistry: CommandsRegistry = {};
     registerCommand(CommandsRegistry, "login", handlerLogin);
     registerCommand(CommandsRegistry, "register", handlerRegister);
-    registerCommand(CommandsRegistry,"reset",handlerReset);
-    registerCommand(CommandsRegistry,"users",handlerGetAllUser)
+    registerCommand(CommandsRegistry, "reset", handlerReset);
+    registerCommand(CommandsRegistry, "users", handlerGetAllUser);
+    registerCommand(CommandsRegistry, "agg", handlerAgg);
 
     let args: string[] = process.argv;
     if (args.length < 3)
