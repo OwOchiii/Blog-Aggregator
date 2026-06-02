@@ -1,5 +1,5 @@
 import {setUser, readConfig} from "./config";
-import { createUser, getUserByName, resetUserTable} from "./lib/db/queries/users";
+import { createUser, getUserByName, resetUserTable, getAllUser} from "./lib/db/queries/users";
 
 export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -32,6 +32,11 @@ export async function handlerLogin(cmdName: string, ...args: string[] ){
 export async function handlerReset(cmdName: string, ...args: string[]){
     await resetUserTable();
     console.log("User table reset successfully");
+}
+
+export async function handlerGetAllUser(cmdName: string, ...args: string[]){
+    const allUser = await getAllUser();
+    console.log(allUser);
 }
 
 
