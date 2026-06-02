@@ -1,10 +1,12 @@
 import { readConfig } from "./config";
-import {CommandsRegistry, handlerLogin, registerCommand, runCommand} from "./CommandHandler";
+import {CommandsRegistry, handlerLogin, handlerRegister, registerCommand, runCommand} from "./CommandHandler";
 
-function main() {
+async function main() {
     console.log("Hello, world!");
     const CommandsRegistry: CommandsRegistry = {};
     registerCommand(CommandsRegistry, "login", handlerLogin);
+    registerCommand(CommandsRegistry, "register", handlerRegister);
+    
 
     let args: string[] = process.argv;
     if (args.length < 3)
@@ -12,10 +14,11 @@ function main() {
     const cmdName = args[2];
     const cmdArgs = args.slice(3);
 
-    runCommand(CommandsRegistry, cmdName, ...cmdArgs);
+    await runCommand(CommandsRegistry, cmdName, ...cmdArgs);
     
     const config = readConfig();
     console.log(config);
+    process.exit(0);
 }
 
 main();
