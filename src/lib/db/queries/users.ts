@@ -16,3 +16,7 @@ export async function resetUserTable(){
     await db.delete(users);
 }
 
+export async function getAllUser(){
+  await db.select().from(users);
+}
+
