@@ -9,7 +9,10 @@ import {
     handlerGetAllUser,
     handlerAgg,
     handlerAddFeed,
-    handlerFeeds
+    handlerFeeds,
+    handlerFollow,
+    handlerFollowing,
+    middlewareLoggedIn
 } from "./CommandHandler";
 
 async function main() {
@@ -19,8 +22,10 @@ async function main() {
     registerCommand(CommandsRegistry, "reset", handlerReset);
     registerCommand(CommandsRegistry, "users", handlerGetAllUser);
     registerCommand(CommandsRegistry, "agg", handlerAgg);
-    registerCommand(CommandsRegistry, "addfeed", handlerAddFeed);
+    registerCommand(CommandsRegistry, "addfeed", middlewareLoggedIn(handlerAddFeed));
     registerCommand(CommandsRegistry, "feeds", handlerFeeds);
+    registerCommand(CommandsRegistry, "follow", middlewareLoggedIn(handlerFollow));
+    registerCommand(CommandsRegistry, "following", middlewareLoggedIn(handlerFollowing));
 
     let args: string[] = process.argv;
     if (args.length < 3)
