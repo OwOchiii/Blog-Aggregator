@@ -1,7 +1,7 @@
 import {setUser, readConfig} from "./config";
 import { createUser, getUserByName, resetUserTable, getAllUser} from "./lib/db/queries/users";
 import { createFeed, getAllFeedsWithUsers, getFeedByUrl } from "./lib/db/queries/feeds";
-import { createFeedFollow, getFeedFollowsForUser } from "./lib/db/queries/feedFollows";
+import {createFeedFollow, deleteFeedFollow, getFeedFollowsForUser} from "./lib/db/queries/feedFollows";
 import { fetchFeed } from "./lib/rss";
 import { printFeed } from "./utils";
 import { InferSelectModel } from "drizzle-orm";
@@ -27,6 +27,8 @@ export const middlewareLoggedIn = (handler: UserCommandHandler): CommandHandler 
         await handler(cmdName, user, ...args);
     };
 };
+
+
 
 export async function handlerRegister(cmdName: string, ...args: string[]) {
     if (args.length === 0)
@@ -120,6 +122,15 @@ export async function handlerFollowing(cmdName: string, user: User, ...args: str
     for (const { feedName } of feedFollows) {
         console.log(`* ${feedName}`);
     }
+}
+
+export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
+    if (args.length === 0) {
+        throw new Error("unfollow requires a URL argument");
+    }
+    const url = args[0];
+    await deleteFeedFollow(url,user.id);
+    console.log(`Unfollowed: ${url}`);
 }
 
 

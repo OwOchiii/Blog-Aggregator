@@ -12,7 +12,7 @@ import {
     handlerFeeds,
     handlerFollow,
     handlerFollowing,
-    middlewareLoggedIn
+    middlewareLoggedIn, handlerUnfollow
 } from "./CommandHandler";
 
 async function main() {
@@ -26,6 +26,7 @@ async function main() {
     registerCommand(CommandsRegistry, "feeds", handlerFeeds);
     registerCommand(CommandsRegistry, "follow", middlewareLoggedIn(handlerFollow));
     registerCommand(CommandsRegistry, "following", middlewareLoggedIn(handlerFollowing));
+    registerCommand(CommandsRegistry,"unfollow",middlewareLoggedIn(handlerUnfollow));
 
     let args: string[] = process.argv;
     if (args.length < 3)
