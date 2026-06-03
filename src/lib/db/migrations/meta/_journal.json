@@ -15,6 +15,13 @@
       "when": 1780449271741,
       "tag": "0001_naive_lucky_pierre",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780450037572,
+      "tag": "0002_famous_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }
