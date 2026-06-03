@@ -8,7 +8,8 @@ import {
     runCommand,
     handlerGetAllUser,
     handlerAgg,
-    handlerAddFeed
+    handlerAddFeed,
+    handlerFeeds
 } from "./CommandHandler";
 
 async function main() {
@@ -19,6 +20,7 @@ async function main() {
     registerCommand(CommandsRegistry, "users", handlerGetAllUser);
     registerCommand(CommandsRegistry, "agg", handlerAgg);
     registerCommand(CommandsRegistry, "addfeed", handlerAddFeed);
+    registerCommand(CommandsRegistry, "feeds", handlerFeeds);
 
     let args: string[] = process.argv;
     if (args.length < 3)
@@ -28,8 +30,6 @@ async function main() {
 
     await runCommand(CommandsRegistry, cmdName, ...cmdArgs);
     
-    const config = readConfig();
-    console.log(config);
     process.exit(0);
 }
 
