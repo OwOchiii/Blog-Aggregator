@@ -8,6 +8,13 @@
       "when": 1780294586376,
       "tag": "0000_medical_prima",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780449271741,
+      "tag": "0001_naive_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }

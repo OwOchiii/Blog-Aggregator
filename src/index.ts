@@ -7,7 +7,8 @@ import {
     handlerReset,
     runCommand,
     handlerGetAllUser,
-    handlerAgg
+    handlerAgg,
+    handlerAddFeed
 } from "./CommandHandler";
 
 async function main() {
@@ -17,6 +18,7 @@ async function main() {
     registerCommand(CommandsRegistry, "reset", handlerReset);
     registerCommand(CommandsRegistry, "users", handlerGetAllUser);
     registerCommand(CommandsRegistry, "agg", handlerAgg);
+    registerCommand(CommandsRegistry, "addfeed", handlerAddFeed);
 
     let args: string[] = process.argv;
     if (args.length < 3)

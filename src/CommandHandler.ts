@@ -1,6 +1,8 @@
 import {setUser, readConfig} from "./config";
 import { createUser, getUserByName, resetUserTable, getAllUser} from "./lib/db/queries/users";
+import { createFeed } from "./lib/db/queries/feeds";
 import { fetchFeed } from "./lib/rss";
+import { printFeed } from "./utils";
 
 export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 
@@ -50,6 +52,27 @@ export async function handlerGetAllUser(cmdName: string, ...args: string[]){
 export async function handlerAgg(cmdName: string, ...args: string[]) {
     const feed = await fetchFeed("https://www.wagslane.dev/index.xml");
     console.log(feed);
+}
+
+export async function handlerAddFeed(cmdName: string, ...args: string[]) {
+    if (args.length < 2) {
+        throw new Error("addfeed requires two arguments: name and url");
+    }
+    const name = args[0];
+    const url = args[1];
+    
+    const cfg = readConfig();
+    if (!cfg.currentUserName) {
+        throw new Error("No user is currently logged in");
+    }
+    
+    const user = await getUserByName(cfg.currentUserName);
+    if (!user) {
+        throw new Error("Current user not found in database");
+    }
+    
+    const feed = await createFeed(name, url, user.id);
+    printFeed(feed, user);
 }
 
 
