@@ -1,5 +1,18 @@
 import { getNextFeedToFetch, markFeedFetched } from "./lib/db/queries/feeds";
+import { createPost } from "./lib/db/queries/posts";
 import { fetchFeed } from "./lib/rss";
+
+function parsePublishedDate(dateStr: string): Date | null {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+    return date;
+  } catch {
+    return null;
+  }
+}
 
 export async function scrapeFeeds() {
   const feed = await getNextFeedToFetch();
@@ -15,9 +28,25 @@ export async function scrapeFeeds() {
     await markFeedFetched(feed.id);
     
     console.log(`Found ${rssFeed.items.length} items in feed: ${feed.name}`);
+    let savedCount = 0;
+    
     for (const item of rssFeed.items) {
-      console.log(`- ${item.title}`);
+      const publishedAt = parsePublishedDate(item.pubDate);
+      const post = await createPost(
+        item.title,
+        item.link,
+        item.description,
+        publishedAt,
+        feed.id
+      );
+      
+      if (post) {
+        savedCount++;
+        console.log(`  Saved: ${item.title}`);
+      }
     }
+    
+    console.log(`Saved ${savedCount} new posts from ${feed.name}`);
   } catch (error) {
     console.error(`Error fetching feed ${feed.name}:`, error);
   }

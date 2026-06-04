@@ -2,6 +2,7 @@ import {setUser, readConfig} from "./config";
 import { createUser, getUserByName, resetUserTable, getAllUser} from "./lib/db/queries/users";
 import { createFeed, getAllFeedsWithUsers, getFeedByUrl } from "./lib/db/queries/feeds";
 import {createFeedFollow, deleteFeedFollow, getFeedFollowsForUser} from "./lib/db/queries/feedFollows";
+import { getPostsForUser } from "./lib/db/queries/posts";
 import { fetchFeed } from "./lib/rss";
 import { printFeed } from "./utils";
 import { scrapeFeeds, parseDuration, formatDuration } from "./scraper";
@@ -154,6 +155,35 @@ export async function handlerUnfollow(cmdName: string, user: User, ...args: stri
     const url = args[0];
     await deleteFeedFollow(url,user.id);
     console.log(`Unfollowed: ${url}`);
+}
+
+export async function handlerBrowse(cmdName: string, user: User, ...args: string[]) {
+    const limit = args.length > 0 ? parseInt(args[0], 10) : 2;
+    
+    if (isNaN(limit) || limit <= 0) {
+        throw new Error("Limit must be a positive number");
+    }
+    
+    const posts = await getPostsForUser(user.id, limit);
+    
+    if (posts.length === 0) {
+        console.log("No posts found. Make sure you're following some feeds and they have been fetched.");
+        return;
+    }
+    
+    console.log(`\nShowing ${posts.length} posts:\n`);
+    for (const { post, feed } of posts) {
+        console.log(`Title: ${post.title}`);
+        console.log(`URL: ${post.url}`);
+        console.log(`Feed: ${feed.name}`);
+        if (post.description) {
+            console.log(`Description: ${post.description}`);
+        }
+        if (post.publishedAt) {
+            console.log(`Published: ${post.publishedAt}`);
+        }
+        console.log("-".repeat(80));
+    }
 }
 
 
