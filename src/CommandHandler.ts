@@ -4,6 +4,7 @@ import { createFeed, getAllFeedsWithUsers, getFeedByUrl } from "./lib/db/queries
 import {createFeedFollow, deleteFeedFollow, getFeedFollowsForUser} from "./lib/db/queries/feedFollows";
 import { fetchFeed } from "./lib/rss";
 import { printFeed } from "./utils";
+import { scrapeFeeds, parseDuration, formatDuration } from "./scraper";
 import { InferSelectModel } from "drizzle-orm";
 import { users } from "./lib/db/schema";
 
@@ -74,8 +75,30 @@ export async function handlerGetAllUser(cmdName: string, ...args: string[]){
 }
 
 export async function handlerAgg(cmdName: string, ...args: string[]) {
-    const feed = await fetchFeed("https://www.wagslane.dev/index.xml");
-    console.log(feed);
+    if (args.length === 0) {
+        throw new Error("agg requires a time_between_reqs argument");
+    }
+    
+    const timeBetweenRequests = parseDuration(args[0]);
+    console.log(`Collecting feeds every ${formatDuration(timeBetweenRequests)}`);
+    
+    const handleError = (error: any) => {
+        console.error("Error in scrapeFeeds:", error);
+    };
+    
+    scrapeFeeds().catch(handleError);
+    
+    const interval = setInterval(() => {
+        scrapeFeeds().catch(handleError);
+    }, timeBetweenRequests);
+    
+    await new Promise<void>((resolve) => {
+        process.on("SIGINT", () => {
+            console.log("Shutting down feed aggregator...");
+            clearInterval(interval);
+            resolve();
+        });
+    });
 }
 
 export async function handlerAddFeed(cmdName: string, user: User, ...args: string[]) {
